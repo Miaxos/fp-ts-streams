@@ -1,48 +1,28 @@
-# hello-world-javascript-library
-![Continuous integration](https://github.com/fp51/hello-world-javascript-library/workflows/Continuous%20integration/badge.svg)
+# Pull-based streams for typed functional programming in TypeScript with FP-TS
 
-This is a repo template for other javascript oss libraries. Use it for your new
-library to have a repository set up with lint, test and usefull github
-workflows.
+`fp-ts-stream` is a library for streams with the `fp-ts` ecosystem.
 
-# Features
+`fp-ts-stream` aims to allow developers to use pull-based streams that are available in Rust for typescript.
 
-## Continuous integration
+**Inspired by**
 
-Runs lint, test and build on every commit.
+- [Rust-lang](https://www.rust-lang.org/)
+- [RxJS](https://rxjs.dev/)
 
-## Continuous delivery
+# Installation
 
-Publish canary versions of the library for pull requests. Publish latest version
-once a pull request is merged on `main`.
+To install the stable version:
 
-## Automatic version bump
+```
+npm install fp-ts-streams
+```
 
-Flag your pull requests with `Action: patch bump`, `Action: minor bump`,
-`Action: major bump` to increment the version of your package or with
-`Action: no bump` otherwise.
+# Documentation
 
-## Automatic changelog bump
+**Disclaimer**. Teaching functional programming is out of scope of this project, so the documentation assumes you already know what FP is.
 
-Simply complete the `Unreleased` section of the changelog in your pull request.
-It will be update to the new version once merge.
+- [Docs(WIP)](https://miaxos.github.io/fp-ts-streams/)
 
-## Automatic release creation
+# License
 
-Github releases are created automatically on a new version, using the
-corresponding part of the changelog as content.
-
-## Automatic rebase and merge 
-
-Flagging a pull request with the `Action: keep-rebased-then-merge` flag with
-keep it rebased until it can me merged.
-
-## Automatic Github Pages documentation release 
-
-Merging a pull request on `master` will push a new generation of the
-documentation on `gh-pages`
-([example](https://fp51.github.io/hello-world-javascript-library/))
-
-## Dependabot
-
-See [`config`](.github/dependabot.yml)
+The MIT License (MIT)

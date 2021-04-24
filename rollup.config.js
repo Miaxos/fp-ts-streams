@@ -6,9 +6,8 @@ import { terser } from 'rollup-plugin-terser';
 export default [
   {
     input: [
-      'src/**/*.(ts|tsx)',
-      '!src/**/*.test.(ts|tsx)',
-      '!src/**/*.stories.(ts|tsx)',
+      'src/**/*.ts',
+      '!src/**/*.test.ts',
     ],
     plugins: [multiInput(), commonjs(), typescript(), terser()],
     external: [],

@@ -1,7 +1,7 @@
 {
-  "name": "@fp51/hello-world",
-  "version": "0.3.0",
-  "description": "Say hello",
+  "name": "fp-ts-streams",
+  "version": "0.0.1",
+  "description": "Pull based streams library based on the fp-ts ecosystem",
   "main": "dist/index.js",
   "module": "esm/index.js",
   "types": "dist/index.d.ts",
@@ -13,18 +13,18 @@
   "scripts": {
     "build": "rm -rf dist esm && rollup -c",
     "test:js": "jest --coverage",
-    "lint:js": "eslint . --ext .js,.jsx,.ts,.tsx,.json,.d.ts --cache",
+    "lint:js": "eslint . --ext .js,.ts,.json,.d.ts --cache",
     "docs": "typedoc"
   },
-  "homepage": "https://github.com/fp51/hello-world-javascript-library#readme",
+  "homepage": "https://github.com/miaxos/fp-ts-streams#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fp51/hello-world-javascript-library.git"
+    "url": "git+https://github.com/miaxos/fp-ts-streams.git"
   },
   "bugs": {
-    "url": "https://github.com/fp51/hello-world-javascript-library/issues"
+    "url": "https://github.com/miaxos/fp-ts-streams/issues"
   },
-  "author": "fp51",
+  "author": "Anthony Griffon <anthony@griffon.one>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
