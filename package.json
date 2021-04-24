@@ -32,7 +32,7 @@
     "@fp51/eslint-config-jest": "^1.0.0",
     "@rollup/plugin-commonjs": "^18.0.0",
     "@types/jest": "^26.0.20",
-    "eslint": "^7.20.0",
+    "eslint": "^7.25.0",
     "jest": "^26.6.3",
     "rollup": "^2.39.0",
     "rollup-plugin-multi-input": "^1.2.0",
