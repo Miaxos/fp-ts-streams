@@ -1,0 +1,109 @@
+name: Publish package
+
+on:
+  workflow_run:
+    workflows: ["Continuous integration", "On merge"]
+    types:
+      - completed
+
+jobs:
+  publish-canary:
+    name: Publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Find artifact
+      id: find-artifact
+      uses: actions/github-script@v3.1.0
+      with:
+        script: |
+          const artifacts = await github.actions.listWorkflowRunArtifacts({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             run_id: ${{ github.event.workflow_run.id }},
+          });
+
+          const matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+            return artifact.name == "package"
+          })[0];
+
+          if (!matchArtifact) {
+            console.log("::set-output name=found::false")
+          } else {
+            console.log("::set-output name=found::true")
+            console.log(`::set-output name=id::${matchArtifact.id}`)
+          }
+
+    - name: Download artifact
+      if: steps.find-artifact.outputs.found == 'true'
+      uses: actions/github-script@v3.1.0
+      env:
+        ARTIFACT_ID: ${{ steps.find-artifact.outputs.id }}
+      with:
+        script: |
+          const download = await github.actions.downloadArtifact({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             artifact_id: process.env.ARTIFACT_ID,
+             archive_format: 'zip',
+          });
+
+          const fs = require('fs');
+          fs.writeFileSync('${{github.workspace}}/package.zip', Buffer.from(download.data));
+
+    - name: Unzip artifact
+      if: steps.find-artifact.outputs.found == 'true'
+      run: |
+        unzip package.zip
+        tar -xzf package.tgz
+
+    - name: Extract metadata
+      id: compute-version
+      if: steps.find-artifact.outputs.found == 'true'
+      run: |
+        VERSION=$(cat package/package.json | jq -r '.version')
+        NAME=$(cat package/package.json | jq -r '.name')
+        REF=$(cat ref)
+        NPM_TAG=$(cat npm-tag)
+
+        echo "::set-output name=version::$VERSION"
+        echo "::set-output name=name::$NAME"
+        echo "::set-output name=ref::$REF"
+        echo "::set-output name=npmTag::$NPM_TAG"
+
+    - name: Create deployment
+      id: deployment
+      if: steps.find-artifact.outputs.found == 'true'
+      uses: actions/github-script@v3
+      env:
+        NAME: ${{ steps.compute-version.outputs.name }}
+        VERSION: ${{ steps.compute-version.outputs.version }}
+        REF: ${{ steps.compute-version.outputs.ref }}
+        NPM_TAG: ${{ steps.compute-version.outputs.npmTag }}
+        ARTIFACT_ID: ${{ steps.find-artifact.outputs.id }}
+      with:
+        github-token: ${{ secrets.TOKEN_REPO_WRITE }}
+        previews: 'ant-man-preview,flash-preview'
+        script: |
+          const name = process.env.NAME;
+          const version = process.env.VERSION;
+          const ref = process.env.REF;
+
+          const { data: deployment } = await github.repos.createDeployment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref,
+            environment: 'npm',
+            auto_merge: false,
+            required_contexts: [],
+            description: `Publish ${name}@${version} on npm`,
+            payload: {
+              name,
+              version,
+              artifactId: process.env.ARTIFACT_ID,
+              npmTag: process.env.NPM_TAG,
+            },
+            production_environment: true,
+          });
+
+          console.log(`::set-output name=id::${deployment.id}`)

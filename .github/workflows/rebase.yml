@@ -1,0 +1,51 @@
+name: Rebase pull requests when main change
+
+on:
+  pull_request_target:
+    types: [labeled, closed]
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    name: 'Rebase branch on main'
+
+    steps:
+    - name: 'Checkout repository'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.TOKEN_REPO_WRITE }}
+
+    - name: 'Rebase all pull requests targeted'
+      if: github.event_name == 'push'
+      uses: fp51/actions/rebase-pull-requests@v2
+      with:
+        # we use another token here
+        # because an action in a workflow run can't trigger a new workflow run
+        # with the GITHUB_TOKEN
+        # @see https://help.github.com/en/articles/events-that-trigger-workflows#event-restrictions
+        token: ${{ secrets.TOKEN_REPO_WRITE }}
+        label: 'Action: keep-rebased'
+        gitUserName: ${{ secrets.BOT_NAME }}
+        gitUserEmail: ${{ secrets.BOT_EMAIL }}
+
+    - name: 'Rebase the current pull request'
+      if: >
+        github.event_name == 'pull_request_target'
+        && contains(github.event.pull_request.labels.*.name, 'Action: keep-rebased')
+      uses: fp51/actions/rebase-pull-requests@v2
+      with:
+        # we use another token here
+        # because an action in a workflow run can't trigger a new workflow run
+        # with the GITHUB_TOKEN
+        # @see https://help.github.com/en/articles/events-that-trigger-workflows#event-restrictions
+        token: ${{ secrets.TOKEN_REPO_WRITE }}
+        prNumber: ${{ github.event.pull_request.number }}
+        label: 'Action: keep-rebased'
+        gitUserName: ${{ secrets.BOT_NAME }}
+        gitUserEmail: ${{ secrets.BOT_EMAIL }}
+

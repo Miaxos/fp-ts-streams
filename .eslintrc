@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "@fp51/eslint-config/light-typescript",
+    "@fp51/eslint-config-jest"
+  ]
+}
+
