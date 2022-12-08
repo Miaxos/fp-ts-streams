@@ -30,7 +30,7 @@
   "devDependencies": {
     "@fp51/eslint-config": "^1.0.0",
     "@fp51/eslint-config-jest": "^1.0.0",
-    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-commonjs": "^23.0.4",
     "@types/jest": "^26.0.20",
     "eslint": "^7.20.0",
     "jest": "^26.6.3",
